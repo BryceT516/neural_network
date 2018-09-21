@@ -4,6 +4,8 @@ require_relative 'output_node'
 
 class NetworkManager
   def initialize(hidden_layers:, input_count:, output_count:)
+    learning_rate = 5
+
     @input_nodes = []
     input_count.times {@input_nodes << InputNode.new}
 
@@ -11,15 +13,15 @@ class NetworkManager
     hidden_layers.each_with_index do |node_count, index|
       hidden_nodes = []
       if index == 0
-        node_count.times { |node_index| hidden_nodes << HiddenNode.new(layer: index, node_index: node_index, parent_nodes_count: @input_nodes.count)}
+        node_count.times { |node_index| hidden_nodes << HiddenNode.new(layer: index, node_index: node_index, parent_nodes_count: @input_nodes.count, learning_rate: learning_rate)}
       else
-        node_count.times { |node_index| hidden_nodes << HiddenNode.new(layer: index, node_index: node_index, parent_nodes_count: hidden_layers[index - 1])}
+        node_count.times { |node_index| hidden_nodes << HiddenNode.new(layer: index, node_index: node_index, parent_nodes_count: hidden_layers[index - 1], learning_rate: learning_rate)}
       end
       @hidden_layers << hidden_nodes
     end
 
     @output_nodes = []
-    output_count.times {@output_nodes << OutputNode.new(hidden_layers.last)}
+    output_count.times {@output_nodes << OutputNode.new(parent_nodes_count: hidden_layers.last, learning_rate: learning_rate)}
 
   end
 
@@ -31,9 +33,9 @@ class NetworkManager
     end
 
     execute_network
-
-    back_propogate
-
+# @output_nodes.each{|node| node.describe_itself}
+    back_propagate
+# @output_nodes.each{|node| node.describe_itself}
     store_train_results
   end
 
@@ -73,21 +75,34 @@ class NetworkManager
     end
   end
 
-  def back_propogate
-    @output_nodes.each do |node|
-      node.back_propogate
-    end
+  def back_propagate
     backwards_layers = Array.new(@hidden_layers.reverse)
+
+    @output_nodes.each do |node|
+      node.back_propagate(parent_nodes: backwards_layers[0])
+    end
+
     backwards_layers.each_with_index do |layer, index|
       if index == 0
         child_nodes = @output_nodes
       else
         child_nodes = backwards_layers[index - 1]
       end
+
+      if index == backwards_layers.count - 1
+        parent_nodes = @input_nodes
+      else
+        parent_nodes = backwards_layers[index + 1]
+      end
+
       layer.each do |node|
-        node.back_propogate(child_nodes)
+        node.back_propagate(parent_nodes: parent_nodes, child_nodes: child_nodes)
       end
     end
+  end
+
+  def set_output_range(minimum_value:, maximum_value:)
+    @output_nodes.each{|node| node.set_output_range(minimum_value: minimum_value, maximum_value: maximum_value)}
   end
 
   def store_train_results
