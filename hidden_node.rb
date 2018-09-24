@@ -50,7 +50,7 @@ class HiddenNode
   private
 
   def random_weight
-    rand
+    rand / 2
   end
 
   def modify_parent_nodes_weights(parent_nodes)

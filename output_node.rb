@@ -23,13 +23,14 @@ class OutputNode
       sum + values[0] * values[1]
     end
     network_output = (1 / (1 + Math.exp(-(net_parent_output))))
-    @actual_output = network_output * @range + @minimum_value
+    @actual_output = network_output #* @range + @minimum_value
   end
 
   def back_propagate(parent_nodes:)
-    actual_output_scaled = (@actual_output - @minimum_value) / @range
-    target_output_scaled = (@target_output - @minimum_value) / @range
-    @error_value = actual_output_scaled * (1 - actual_output_scaled) * (target_output_scaled - actual_output_scaled)
+    # actual_output_scaled = (@actual_output - @minimum_value) / @range
+    # target_output_scaled = (@target_output - @minimum_value) / @range
+    # @error_value = actual_output_scaled * (1 - actual_output_scaled) * (target_output_scaled - actual_output_scaled)
+    @error_value = @actual_output * (1 - @actual_output) * (@target_output - @actual_output)
     puts " ----------- Error value = #{@error_value} -------------"
     modify_parent_nodes_weights(parent_nodes)
   end
@@ -41,7 +42,7 @@ class OutputNode
   end
 
   def set_target_output(value)
-    @target_output = value
+    @target_output = (value - @minimum_value) / (@maximum_value - @minimum_value)
   end
 
   def target_output
@@ -67,7 +68,7 @@ class OutputNode
   private
 
   def random_weight
-    rand
+    rand / 2
   end
 
   def modify_parent_nodes_weights(parent_nodes)
