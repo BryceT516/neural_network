@@ -22,9 +22,8 @@ class OutputNode
     net_parent_output = (parent_node_values.zip @parent_nodes_weights).reduce(0) do |sum, values|
       sum + values[0] * values[1]
     end
-    # network_output = (1 / (1 + Math.exp(-(net_parent_output))))
-    # @actual_output = network_output #* @range + @minimum_value
-    @actual_output = net_parent_output
+    network_output = (1 / (1 + Math.exp(-(net_parent_output))))
+    @actual_output = network_output #* @range + @minimum_value
   end
 
   def back_propagate(parent_nodes:)
@@ -69,7 +68,7 @@ class OutputNode
   private
 
   def random_weight
-    rand - 0.5
+    rand * 20.0 - 10.0
   end
 
   def modify_parent_nodes_weights(parent_nodes)

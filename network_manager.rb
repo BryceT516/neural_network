@@ -4,7 +4,7 @@ require_relative 'output_node'
 
 class NetworkManager
   def initialize(hidden_layers:, input_count:, output_count:)
-    learning_rate = 1.0
+    learning_rate = 10.0
 
     @input_nodes = []
     input_count.times {@input_nodes << InputNode.new}
@@ -104,10 +104,8 @@ class NetworkManager
   end
 
   def set_data_range(minimum_value:, maximum_value:)
-    @output_nodes.each{|node| node.set_output_range(minimum_value: minimum_value[4], maximum_value: maximum_value[4])}
-    @input_nodes.each_with_index do |node, index|
-      node.set_input_range(range_minimum: minimum_value[index], range_maximum: maximum_value[index])
-    end
+    @output_nodes.each{|node| node.set_output_range(minimum_value: minimum_value, maximum_value: maximum_value)}
+
   end
 
   def store_train_results

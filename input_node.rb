@@ -11,7 +11,7 @@ class InputNode
   end
 
   def set_given_input(value)
-    @given_input = (value - @range_minimum) / (@range_maximum - @range_minimum)
+    @given_input = value
   end
 
   def given_input

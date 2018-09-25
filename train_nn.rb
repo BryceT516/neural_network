@@ -3,32 +3,22 @@ require 'csv'
 require_relative 'network_manager'
 
 input_data = CSV.open('mixed-data.csv')
-minimum_value = [1000, 1000, 1000, 1000, 1000]
-maximum_value = [1, 1, 1, 1, 1]
+minimum_value = 1000
+maximum_value = 1
 
 input_data.each do |row|
-  row.each_with_index do |value, index|
-    minimum_value[index] = value.to_f if value.to_f < minimum_value[index]
-    maximum_value[index] = value.to_f if value.to_f > maximum_value[index]
-  end
-
+  minimum_value = [minimum_value, row.last.to_f].min
+  maximum_value = [maximum_value, row.last.to_f].max
 end
 
-minimum_value = minimum_value.map do |value|
-  value * 0.75
-end
-maximum_value = maximum_value.map do |value|
-  value * 1.25
-end
+minimum_value = minimum_value * 0.75
+maximum_value = maximum_value * 1.25
 
-minimum_value.zip(maximum_value).each do |min_val, max_val|
-  puts "Min: #{min_val}, Max: #{max_val}"
-end
 
 number_of_inputs = 4
 number_of_outputs = 1
 
-nodes_in_each_hidden_layer = [6, 6, 6, 6, 6, 6]
+nodes_in_each_hidden_layer = [10, 5]
 
 
 puts "Neural Network Program"
