@@ -15,10 +15,10 @@ input_data.each do |row|
 end
 
 minimum_value = minimum_value.map do |value|
-  value - (value * 0.25)
+  value * 0.75
 end
 maximum_value = maximum_value.map do |value|
-  value + (value * 0.25)
+  value * 1.25
 end
 
 minimum_value.zip(maximum_value).each do |min_val, max_val|
@@ -28,7 +28,7 @@ end
 number_of_inputs = 4
 number_of_outputs = 1
 
-nodes_in_each_hidden_layer = [3, 2]
+nodes_in_each_hidden_layer = [6, 6, 6, 6, 6, 6]
 
 
 puts "Neural Network Program"

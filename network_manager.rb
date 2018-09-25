@@ -4,7 +4,7 @@ require_relative 'output_node'
 
 class NetworkManager
   def initialize(hidden_layers:, input_count:, output_count:)
-    learning_rate = 0.5
+    learning_rate = 1.0
 
     @input_nodes = []
     input_count.times {@input_nodes << InputNode.new}
